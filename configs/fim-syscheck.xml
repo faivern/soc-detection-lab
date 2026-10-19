@@ -1,0 +1,5 @@
+<!-- Configuration excerpt: merge the directories element into the Linux
+     agent's existing syscheck section. This is not a complete ossec.conf. -->
+<syscheck>
+  <directories check_all="yes" realtime="yes" report_changes="yes">/home/soclab/soc-case</directories>
+</syscheck>

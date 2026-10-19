@@ -1,0 +1,11 @@
+# Local credentials and raw, unreviewed captures
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+/raw-evidence/
+.DS_Store
+Thumbs.db
