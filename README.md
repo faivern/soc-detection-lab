@@ -4,7 +4,8 @@
 
 I built a three-VM security monitoring lab to practice the work behind a SOC alert. Starting with repeated failed SSH logins, I traced the activity through Linux logs, wrote a custom Wazuh rule, and confirmed it produced a live alert. I also tested file integrity monitoring by changing a configuration file and inspecting the recorded diff.
 
-**Tools:** Wazuh · Ubuntu · Windows 11 · VMware Workstation · OpenSSH  
+**Tools:** Wazuh · Ubuntu · Windows 11 · VMware Workstation · OpenSSH
+
 **Skills:** log analysis · detection engineering · alert investigation · file integrity monitoring
 
 ## The setup
