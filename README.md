@@ -1,61 +1,74 @@
-# SOC Detection Lab
+# SOC-001 · SSH Brute Force Detection
 
-**From authentication failures to detection logic and file-change investigation.**
+**A Wazuh home lab: simulate an attack, investigate the logs, and build a working detection.**
 
-A personal security monitoring lab built with Wazuh in VMware Workstation. The first case follows a controlled SSH password-guessing simulation, investigation of Linux authentication events, a custom correlation rule, and a separate file integrity monitoring exercise.
+I built a three-VM security monitoring lab to practice the work behind a SOC alert. Starting with repeated failed SSH logins, I traced the activity through Linux logs, wrote a custom Wazuh rule, and confirmed it produced a live alert. I also tested file integrity monitoring by changing a configuration file and inspecting the recorded diff.
 
-**Stack:** Wazuh SIEM · Ubuntu Linux · Windows 11 · OpenSSH · VMware Workstation · MITRE ATT&CK
+**Tools:** Wazuh · Ubuntu · Windows 11 · VMware Workstation · OpenSSH  
+**Skills:** log analysis · detection engineering · alert investigation · file integrity monitoring
 
-## Lab at a glance
+## The setup
+
+A Windows VM generated SSH attempts against an Ubuntu endpoint. The Linux agent sent authentication and file-change events to an Ubuntu server running Wazuh Manager, Indexer, and Dashboard. Everything ran on my VMware lab network.
 
 ```mermaid
 flowchart LR
-    subgraph NAT["VMware NAT · 192.168.142.0/24"]
-        W["Windows 11 client<br/>192.168.142.131"]
-        L["Ubuntu endpoint<br/>192.168.142.134<br/>sshd + Wazuh Agent + FIM"]
-        S["Ubuntu Wazuh server<br/>Manager · Indexer · Dashboard"]
-        W -->|"SSH attempts · TCP 22"| L
-        L -->|"Authentication + file-change events"| S
-        W -.->|"Separate Windows agent telemetry"| S
-    end
+    W["Windows 11<br/>SSH client · .131"] -->|"Failed SSH logins"| L["Ubuntu endpoint<br/>Wazuh Agent · .134"]
+    L -->|"Authentication + FIM events"| S["Wazuh server<br/>Detection + investigation"]
     classDef endpoint fill:#e8f1ff,stroke:#3264a8,color:#14243b
     classDef server fill:#e6f5ee,stroke:#237a57,color:#123c2b
     class W,L endpoint
     class S server
 ```
 
-SSH authentication evidence originates on the **Linux endpoint**. The Windows machine supplies the test traffic; its agent is not the source of these SSH detections. [Architecture details →](docs/architecture.md)
+Lab subnet: `192.168.142.0/24`. An initial UFW block was resolved by allowing SSH from that subnet. [Architecture details →](docs/architecture.md)
 
-## Case studies
+## From failed logins to useful evidence
 
-| Case | Investigation | Status |
-|---|---|---|
-| [SOC-001](cases/SOC-001-ssh-bruteforce.md) | SSH brute force, custom detection, and FIM | Completed; live custom alert and FIM diff captured |
+From Windows PowerShell, I connected to the test account and repeatedly entered incorrect passwords:
 
-**Key finding:** individual SSH failures matched rule `5760` in this environment, and Wazuh's existing brute-force rule `5763` was also observed. The custom rule explores correlation thresholds; it does not fill a claimed absence of built-in detection.
+```powershell
+ssh soclab@192.168.142.134
+```
 
-> **Evidence:** screenshots show Linux authentication failures, custom alert `100101`, and FIM rule `550` with the actual configuration diff. Exact triggering counts and negative-test outcomes remain undocumented. See the [illustrated case study](cases/SOC-001-ssh-bruteforce.md) and [evidence register](docs/evidence.md).
+![SSH attempts rejected by the Linux endpoint](assets/screenshots/01-ssh-attack.png)
 
-## Skills demonstrated
+The failures appeared in the Linux systemd journal and Wazuh Threat Hunting. The key detail was the matching rule: **`5760`, not `5716`, identified individual failures in this environment.** That gave me the right starting point for correlation.
 
-- Configuring a multi-VM monitoring environment and troubleshooting SSH connectivity.
-- Investigating authentication events and selecting correlation rules from observed matches.
-- Developing Wazuh XML rules with source-IP correlation and ATT&CK mapping.
-- Configuring FIM and separating suspicious activity from proof of compromise.
-- Explaining validation boundaries, false positives, and detection gaps.
+![Authentication failures in Wazuh Threat Hunting](assets/screenshots/03-wazuh-threat-hunting.png)
 
-## Explore the repository
+## Building and validating the detection
 
-[Technical case](cases/SOC-001-ssh-bruteforce.md) · [Custom rule](rules/ssh-bruteforce.xml) · [FIM configuration](configs/fim-syscheck.xml) · [Evidence register](docs/evidence.md)
+I created rule **`100101`** to correlate repeated `5760` events from the same source IP, using `frequency="5"` within 20 seconds and alert level 10. It maps to **MITRE ATT&CK T1110.001 — Password Guessing**.
 
-## Potential extensions
+Wazuh already includes brute-force detection; my lab notes also recorded built-in rule `5763`. The custom rule let me practice choosing a correlation source and experimenting with a short detection window.
 
-These are ideas, **not completed cases**:
+After configuration checks and testing, the custom alert appeared in the dashboard. It identifies the source IP, target account, and preceding failures—confirming live alert delivery beyond a logtest result.
 
-- **SOC-002:** Windows persistence detection.
-- **SOC-003:** Automated threat response.
-- **SOC-004:** Linux audit and suspicious command execution.
+![Live custom rule 100101 alert with source IP and preceding SSH failures](assets/screenshots/05-custom-rule-alert.png)
 
-All activity described was a controlled simulation on personally managed lab VMs. No real-world breach or automated response is claimed.
+[View the XML rule](rules/ssh-bruteforce.xml) · [Validation commands and test notes](cases/SOC-001-ssh-bruteforce.md)
 
-[MIT License](LICENSE)
+## Investigating a file change
+
+For a separate FIM exercise, I monitored `/home/soclab/soc-case/` and changed `config.txt` from `security=enabled` to `security=disabled`.
+
+Wazuh generated an integrity-change event. Its details showed changed hashes, file size, and the exact text change in `syscheck.diff`:
+
+![FIM event showing the configuration change and before-and-after hashes](assets/screenshots/06-file-integrity-monitoring-details.png)
+
+SSH detection and FIM worked independently. Linking those events would require timeline investigation; no automatic multi-stage correlation was configured.
+
+## What I learned
+
+The most useful lesson was to build detections from the events actually arriving. Checking the matching rule, decoded source IP, and live alert mattered as much as writing the XML.
+
+This lab also made the limits clear: password mistakes can trigger alerts, slow or distributed guessing can evade a short same-IP window, and failed logins do not prove compromise. A file-change event shows what changed, but ownership alone does not identify who changed it.
+
+Next, I want to explore Windows persistence detection, automated response, and Linux audit logging.
+
+---
+
+Part of my **SOC Detection Lab**. All activity was simulated on personally managed VMs.
+
+[Technical notes](cases/SOC-001-ssh-bruteforce.md) · [Evidence and screenshots](docs/evidence.md) · [FIM configuration](configs/fim-syscheck.xml) · [MIT License](LICENSE)

@@ -13,4 +13,4 @@ Original lab screenshots, reviewed and retained at their supplied dimensions. Th
 | [06-file-integrity-monitoring-details.png](06-file-integrity-monitoring-details.png) | File-change details and actual text diff |
 | [07-fim-inventory.png](07-fim-inventory.png) | Monitored file attributes and hashes |
 
-Seven images are embedded with captions in the [case study](../../cases/SOC-001-ssh-bruteforce.md). No negative-test screenshot is included; that section is text-only. The [evidence register](../../docs/evidence.md) records what each image establishes and the remaining validation limits.
+Four images illustrate the [front-page case study](../../README.md); three more appear in the [technical notes](../../cases/SOC-001-ssh-bruteforce.md). No negative-test screenshot is included; that section is text-only. The [evidence register](../../docs/evidence.md) records what each image establishes and the remaining validation limits.

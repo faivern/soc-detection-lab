@@ -1,6 +1,6 @@
 # Evidence register
 
-The case combines the lab owner's notes with eight original screenshots. Seven are embedded in the case; the editor capture is linked here because the rule is easier to read and reuse as XML. Images were reviewed for visible secrets and unrelated content and retained without pixel edits. Raw alert JSON and validation transcripts are not included.
+The case combines the lab owner's notes with eight original screenshots. Four illustrate the front-page case study and three support the technical notes. The editor capture is linked here; the rule is also available as reusable XML. Images were reviewed for visible secrets and unrelated content and retained without pixel edits. Raw alert JSON and validation transcripts are not included.
 
 | Evidence | What is visible | Limit |
 |---|---|---|
@@ -26,7 +26,7 @@ Clock and timezone settings were not supplied. Resolve these differences before 
 | Positive same-source SSH burst | Live custom alert `100101` captured in the dashboard |
 | Configuration validation | `wazuh-analysisd -t` documented in notes; output unavailable |
 | Rule evaluation in logtest | Successful practical testing reported; logtest transcript unavailable |
-| Negative test | Text-only procedure in the case; exact execution and observed result not supplied |
+| Negative test | Text-only procedure in the technical notes; exact execution and observed result not supplied |
 | Slow guessing and distributed sources | Proposed follow-up tests, not recorded results |
 | Test-file modification | Rule `550` event and actual `syscheck.diff` captured |
 
