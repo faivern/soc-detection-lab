@@ -22,7 +22,7 @@ flowchart TB
 
 The diagram summarizes the event path rather than every transport component. Authentication records are generated on Linux and analyzed by the manager. File monitoring is a separate input; no automatic SSH-to-FIM correlation rule was configured.
 
-The Linux administrative account is `ubuntu-user`. The separate `soclab` account is the SSH simulation target. File monitoring covers `/home/soclab/soc-case/`.
+The Linux agent appears as `ubuntu-user` in the dashboard; its OS hostname is `ubuntu-user-VMware-Virtual-Platform`. The Linux administrative account is `ubuntu-user`. The separate `soclab` account is the SSH simulation target. File monitoring covers `/home/soclab/soc-case/`.
 
 UFW initially blocked SSH. Allowing TCP 22 from the lab subnet resolved connectivity. The following expresses that allowance; it is a reconstruction, not a captured command transcript:
 

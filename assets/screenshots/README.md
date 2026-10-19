@@ -1,19 +1,16 @@
-# Screenshot evidence
+# SOC-001 screenshots
 
-No screenshots were available for the initial publication. This directory intentionally contains no illustrative dashboard images or broken image placeholders.
+Original lab screenshots, reviewed and retained at their supplied dimensions. The filenames are preserved so each capture remains easy to trace to the source material.
 
-When original captures become available, use these suggested names:
-
-| Filename | Evidence to show |
+| File | Use |
 |---|---|
-| `soc-001-01-ssh-attempts.png` | PowerShell connection and failed authentication |
-| `soc-001-02-linux-auth-events.png` | Threat Hunting records from the Linux agent |
-| `soc-001-03-builtin-bruteforce.png` | Built-in rule `5763` event details |
-| `soc-001-04-custom-logtest.png` | Rule `100101` evaluation, clearly labeled logtest |
-| `soc-001-05-custom-manager-alert.png` | Actual manager-generated `100101` alert, if retained |
-| `soc-001-06-fim-event.png` | Monitored path, event time, and changed metadata or hashes |
-| `soc-001-07-fim-diff.png` | Actual `syscheck.diff`, only if present |
+| [01-ssh-attack.png](01-ssh-attack.png) | PowerShell SSH simulation |
+| [02-ssh-authentication-logs.png](02-ssh-authentication-logs.png) | Linux-side failed authentication |
+| [03-wazuh-threat-hunting.png](03-wazuh-threat-hunting.png) | Built-in authentication rule matches |
+| [04-custom-detection-rule.png](04-custom-detection-rule.png) | Supporting editor capture; case uses readable XML instead |
+| [05-custom-rule-alert.png](05-custom-rule-alert.png) | Live dashboard alert for custom rule `100101` |
+| [06-file-integrity-monitoring-row.png](06-file-integrity-monitoring-row.png) | FIM rule `550` event overview |
+| [06-file-integrity-monitoring-details.png](06-file-integrity-monitoring-details.png) | File-change details and actual text diff |
+| [07-fim-inventory.png](07-fim-inventory.png) | Monitored file attributes and hashes |
 
-Crop unrelated interface areas while retaining enough context to identify the event, source, and time. Redact credentials, tokens, unrelated infrastructure, and sensitive file contents. Keep timestamps and timezones readable for timeline analysis. Embed reviewed images in the case using relative paths and a short explanation of what each demonstrates.
-
-Architecture is already represented by reproducible Mermaid diagrams. XML belongs in code blocks and rule files, not screenshots.
+Seven images are embedded with captions in the [case study](../../cases/SOC-001-ssh-bruteforce.md). No negative-test screenshot is included; that section is text-only. The [evidence register](../../docs/evidence.md) records what each image establishes and the remaining validation limits.

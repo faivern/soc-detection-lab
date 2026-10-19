@@ -30,11 +30,11 @@ SSH authentication evidence originates on the **Linux endpoint**. The Windows ma
 
 | Case | Investigation | Status |
 |---|---|---|
-| [SOC-001](cases/SOC-001-ssh-bruteforce.md) | SSH brute force, custom detection, and FIM | Lab exercise completed; documented from lab notes |
+| [SOC-001](cases/SOC-001-ssh-bruteforce.md) | SSH brute force, custom detection, and FIM | Completed; live custom alert and FIM diff captured |
 
 **Key finding:** individual SSH failures matched rule `5760` in this environment, and Wazuh's existing brute-force rule `5763` was also observed. The custom rule explores correlation thresholds; it does not fill a claimed absence of built-in detection.
 
-> **Evidence scope:** the repository contains the supplied lab log excerpt and reconstructed configuration samples. Screenshots, raw alert exports, and validation transcripts were not available at publication. Custom manager-alert delivery and exact triggering counts remain unverified here. See the [evidence register](docs/evidence.md).
+> **Evidence:** screenshots show Linux authentication failures, custom alert `100101`, and FIM rule `550` with the actual configuration diff. Exact triggering counts and negative-test outcomes remain undocumented. See the [illustrated case study](cases/SOC-001-ssh-bruteforce.md) and [evidence register](docs/evidence.md).
 
 ## Skills demonstrated
 
